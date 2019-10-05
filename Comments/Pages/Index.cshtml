@@ -33,6 +33,7 @@ else
             {
                 foreach (var comment in Model.Comments)
                 {
+                    var isCurrentUser = User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId;
                     <tr id="@("commentRow" + comment.Id)">
                         <td>
                             @comment.UserName
@@ -48,9 +49,13 @@ else
                         </td>
                         <td>
                             @* Only the user that created the comment can edit it *@
-                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
+                            @if (isCurrentUser)
                             {
                                 <a asp-page="./Edit" asp-route-commentHeaderId="@comment.Id">Edit</a>
+                                @if (comment._IsEdited)
+                                {
+                                    @Html.Raw("|")
+                                }
                             }
                             @if (comment._IsEdited)
                             {
