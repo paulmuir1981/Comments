@@ -16,3 +16,4 @@ Todo list of things I should add/modify:
 7. Paging / sorting / filtering
 8. Deleting comments / revisions
 9. dot net core 3.0
+10. Interface/abstract entities/models for common fields eg Id
