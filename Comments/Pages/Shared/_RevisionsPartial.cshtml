@@ -1,0 +1,32 @@
+﻿@model List<Comments.ViewModels.RevisionViewModel>
+@* Partial view for list of revisions *@
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Created Date</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @* if there are revisions*@
+            @if (Model.Count > 0)
+            {
+                @foreach (var revision in Model)
+                {
+                    <tr>
+                        <td>@revision.CreatedDate</td>
+                        <td>@revision.Text</td>
+                    </tr>
+                }
+            }
+            @* else no revisions*@
+            else
+            {
+                <tr>
+                    <td class="text-center" colspan="2">No Revisions</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,92 @@
+﻿@page "{handler?}"
+@using System.Security.Claims
+@inject SignInManager<IdentityUser> SignInManager
+@model IndexModel
+@{
+    ViewData["Title"] = "Welcome - This is a Comments System";
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<h1>@ViewData["Title"]</h1>
+@if (SignInManager.IsSignedIn(User))
+{
+    <a asp-page="./Edit">Add Comment</a>
+}
+else
+{
+    <a asp-area="Identity" asp-page="/Account/Login">Login to Add Comments</a>
+}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Created Date</th>
+                <th>Updated Date</th>
+                <th>Comment</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @*If there are comments*@
+            @if (Model.Comments.Count > 0)
+            {
+                foreach (var comment in Model.Comments)
+                {
+                    <tr id="@("commentRow" + comment.Id)">
+                        <td>
+                            @comment.UserName
+                        </td>
+                        <td>
+                            @comment.CreatedDate
+                        </td>
+                        <td>
+                            @comment.UpdatedDate
+                        </td>
+                        <td>
+                            @comment.Text
+                        </td>
+                        <td>
+                            @* Only the user that created the comment can edit it *@
+                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
+                            {
+                                <a asp-page="./Edit" asp-route-commentHeaderId="@comment.Id">Edit</a>
+                            }
+                            @if (comment._IsEdited)
+                            {
+                                <a href="#" id="@("select" + comment.Id)" onclick="Load(@comment.Id)">Show Revisions</a>
+                                <a style="display: none;" href="#" id="@("hide" + comment.Id)" onclick="Reset()">Hide Revisions</a>
+                            }
+                        </td>
+                    </tr>
+                    <tr style="display: none;" class="text-center" id="@("divLoading" + comment.Id)">
+                        <td colspan="5">
+                            <img src="~/images/Spinner-Green.gif" />
+                        </td>
+                    </tr>
+                    <tr style="display: none;" id="@("revisionRow" + comment.Id)">
+                        <td colspan="5">
+                            <div id="@("revisionDiv" + comment.Id)"></div>
+                        </td>
+                    </tr>
+                }
+            }
+            @* no comments*@
+            else
+            {
+                <tr>
+                    <td class="text-center" colspan="5">No Comments</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts{
+    <environment include="Development">
+        <script src="~/js/revisions.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/revisions.min.js"></script>
+    </environment>
+}

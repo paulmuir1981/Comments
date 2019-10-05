@@ -1,0 +1,11 @@
+﻿@model string
+@* Partial for displaying a message, will be blank is model is null or empty *@
+@if (!String.IsNullOrEmpty(Model))
+{
+    // different class for error status
+    var statusMessageClass = Model.StartsWith("Error") ? "danger" : "success";
+    <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @Model
+    </div>
+}
